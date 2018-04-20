@@ -1,0 +1,1 @@
+hl bin\hl\output.hl

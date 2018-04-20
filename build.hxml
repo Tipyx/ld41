@@ -1,0 +1,8 @@
+-cp src
+-main Main
+
+-lib heaps
+
+-swf bin/flash/build.swf
+-swf-header 800:600:60:FFFFFF
+-swf-version 12

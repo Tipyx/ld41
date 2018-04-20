@@ -1,0 +1,28 @@
+{ 
+    "version": "0.2.0",
+    "configurations": [
+        // {
+        //     "name": "HL",
+        //     "type": "fdb",
+        //     "request": "launch",
+        //     // "program": "${workspaceFolder}/bin/hl/output.hl",
+        //     "program": "${workspaceFolder}/bin/hl/runHL.bat",
+        //     "preLaunchTask": "HL Debug",
+        // },
+        {
+            "name": "HL",
+            "type": "hl",
+            "request": "launch",
+            "hxml": "${workspaceRoot}/buildhl.hxml",
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": "HL Debug"
+        },
+        {
+            "name": "Flash",
+            "type": "fdb",
+            "request": "launch",
+            "program": "${workspaceRoot}/bin/flash/build.swf",
+            "preLaunchTask": "Flash Debug"
+        }
+    ]
+}
