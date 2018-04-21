@@ -1,0 +1,28 @@
+{
+	"sheets": [
+		{
+			"name": "data",
+			"columns": [
+				{
+					"typeStr": "0",
+					"name": "id"
+				},
+				{
+					"typeStr": "4",
+					"name": "v0",
+					"display": null
+				}
+			],
+			"lines": [
+				{
+					"id": "pixelScale",
+					"v0": 2
+				}
+			],
+			"separators": [],
+			"props": {}
+		}
+	],
+	"customTypes": [],
+	"compress": false
+}

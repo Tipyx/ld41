@@ -10,12 +10,20 @@
         //     "preLaunchTask": "HL Debug",
         // },
         {
-            "name": "HL",
+            "name": "HL Debug",
             "type": "hl",
             "request": "launch",
             "hxml": "${workspaceRoot}/buildhl.hxml",
             "cwd": "${workspaceRoot}",
             "preLaunchTask": "HL Debug"
+        },
+        {
+            "name": "HL",
+            "type": "hl",
+            "request": "launch",
+            "hxml": "${workspaceRoot}/buildhl.hxml",
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": "HL"
         },
         {
             "name": "Flash",

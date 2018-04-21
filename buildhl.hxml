@@ -1,8 +1,9 @@
 -cp src
 -main Main
 
+-lib castle
 -lib hlsdl
 -lib heaps
 
 -hl bin/hl/output.hl
--D windowSize=1024x768
+-D windowSize=720x480

@@ -19,6 +19,13 @@
         {
             "taskName": "HL Debug",
             "suppressTaskName": true,
+            "args": ["-debug", "buildhl.hxml"],
+            "showOutput": "silent",
+            "isBuildCommand": true,
+        },
+        {
+            "taskName": "HL",
+            "suppressTaskName": true,
             "args": ["buildhl.hxml"],
             "showOutput": "silent",
             "isBuildCommand": true,
