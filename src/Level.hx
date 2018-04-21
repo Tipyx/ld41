@@ -3,18 +3,20 @@ class Level extends h2d.Layers {
 	static var num					= 0;
 	public static var DP_BG			= num++;
 	public static var DP_COLL		= num++;
+	public static var DP_EXIT		= num++;
 	public static var DP_ENM		= num++;
 	public static var DP_HERO		= num++;
 	public static var DP_ARROW		= num++;
 	public static var DP_DEBUG		= num++;
 	
-	public var ld					: LevelData;
-
 	var game						: Game;
+
+	public var id					: DCDB.LvlKind;
+	public var ld					: LevelData;
 
     public var hero                 : en.Hero;
 	public var enemies				: Array<en.Entity>;
-	public var exit					: {cx:Int, cy:Int};
+	public var exit					: {cx:Int, cy:Int, spr:ASprite};
 
 	var arrow						: h2d.Graphics;
 
@@ -33,18 +35,15 @@ class Level extends h2d.Layers {
 	var df							: Float;
 	var fInc						: Bool;
     
-    public function new(game:Game, id:Null<DCDB.LvlKind>) {
+    public function new(game:Game, id:DCDB.LvlKind) {
         super();
-
+		
 		this.game = game;
+		this.id = id;
 
         this.setScale(Const.PIXEL_RATIO);
 
-        // --------- DEBUG ---------
-
-		// haxe.EnumTools.createByName
-
-        ld = new LevelData(this, id != null ? id : Test);
+        ld = new LevelData(this, id);
 
 		// Draw World
 		for (x in 0...ld.wid)
@@ -68,7 +67,11 @@ class Level extends h2d.Layers {
         hero = new en.Hero(this, mHero.cx, mHero.cy);
 
 		var mExit = ld.getMarker(Exit);
-		exit = {cx:mExit.cx, cy:mExit.cy};
+		var sprExit = new ASprite(Const.ALIB, "exit");
+		sprExit.setCenterRatio(0.5, 0.5);
+		sprExit.setPos((mExit.cx + 0.5) * Const.GRID, (mExit.cy + 0.5) * Const.GRID);
+		this.add(sprExit, DP_EXIT);
+		exit = {cx:mExit.cx, cy:mExit.cy, spr:sprExit};
 
         arrow = new h2d.Graphics();
 		arrow.beginFill(0x00ff00);
@@ -99,7 +102,6 @@ class Level extends h2d.Layers {
 			fInc = true;
 		}
 
-		var dist = tipyx.Lib.distance(hero.wx, hero.wy, mouseX, mouseY);
 		var ang = Math.atan2(mouseY - hero.wy, mouseX - hero.wx);
 
 		if (hxd.Key.isReleased(hxd.Key.MOUSE_LEFT))
@@ -157,7 +159,7 @@ class Level extends h2d.Layers {
 			e.update(dt);
 
 		if (hero.cx == exit.cx && hero.cy == exit.cy)
-			trace("End reached!");
+			game.goToNextLevel();
 
 		tweener.update();
 

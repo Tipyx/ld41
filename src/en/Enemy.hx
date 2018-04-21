@@ -68,7 +68,7 @@ class Enemy extends Entity {
 		super.update(dt);
 
 		if (heroIsVisible())
-			Game.ME.resetLevel();
+			Game.ME.goToLevel(level.id);
 
 		// RENDER
 

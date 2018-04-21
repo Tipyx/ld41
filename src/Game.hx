@@ -7,6 +7,7 @@ class Game extends h2d.Layers {
 	public static var DP_LVL		= num++;
 	public static var DP_DEBUG		= num++;
 
+	var levels						: Array<DCDB.LvlKind>;
 	var level						: Level;
 
 	public function new() {
@@ -20,16 +21,37 @@ class Game extends h2d.Layers {
 		bg.endFill();
 		this.add(bg, DP_BG);
 
+		levels = [];
+		for (lvl in DCDB.lvl.all)
+			if (lvl.group == DCDB.Lvl_group.Main)
+				levels.push(lvl.id);
+	
+		#if debug
 		level = new Level(this, Test);
+		#else
+		level = new Level(this, levels[0]);
+		#end
 		this.add(level, DP_LVL);
 	}
 
-	public function resetLevel(id:Null<DCDB.LvlKind> = null) {
-		if (level != null)
+	public function goToLevel(id:DCDB.LvlKind) {
+		if (level != null) {
 			level.destroy();
+			removeChild(level);
+		}
 
 		level = new Level(this, id);
 		this.add(level, DP_LVL);
+	}
+
+	public function goToNextLevel() {
+		if (level == null)
+			throw "goToNextLevel : not supposed to happened here";
+
+		if (levels.indexOf(level.id) == levels.length - 1)
+			throw "TODO : reach last level";
+		else
+			goToLevel(levels[levels.indexOf(level.id) + 1]);
 	}
 
 	public function onResize() {

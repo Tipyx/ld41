@@ -25,14 +25,13 @@ class Main extends hxd.App {
 		console.addCommand("level", "go to Level XXX", [{name:"ID", t:AString}], function(t:String) {
 			for (l in DCDB.lvl.all)
 				if (l.id.toString() == t) {
-					game.resetLevel(l.id);
+					game.goToLevel(l.id);
 					return;
 				}
 
 			throw "Wrong Level Id";
 		});
 		s2d.add(console, 999);
-		
 		haxe.Log.trace = function(v, ?i) console.log(i.className + "@" + i.lineNumber + " : " + v);
 
 		hxd.Res.data.watch(function() {

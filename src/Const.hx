@@ -5,10 +5,14 @@ class Const {
 
 	public static var PIXEL_RATIO		: Int;
 
-	public static var GRID				: Int;	
+	public static var GRID				: Int;
+
+	public static var ALIB				: ALib;
 
 	public static function INIT() {
 		RESIZE();
+
+		ALIB = new ALib(hxd.Res.ss);
 	}
 
 	public static function getDataValue0(id:DCDB.DataKind) {
