@@ -20,7 +20,7 @@ class Game extends h2d.Layers {
 		bg.endFill();
 		this.add(bg, DP_BG);
 
-		level = new Level();
+		level = new Level(this);
 		this.add(level, DP_LVL);
 	}
 

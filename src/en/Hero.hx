@@ -38,6 +38,8 @@ class Hero {
 
     var dbgGr               : h2d.Graphics;
 
+	var forceMax			: Float;
+
     public function new(level:Level, cx:Int, cy:Int) {
         this.level = level;
 
@@ -47,23 +49,47 @@ class Hero {
         rx = ry = 0.5;
         dx = dy = 0;
 
-		// DBG
-
         dbgGr = new h2d.Graphics();
         dbgGr.beginFill(0x21ccda);
-        dbgGr.drawCircle(0, 0, 10);
+        dbgGr.drawCircle(0, 0, Const.GRID >> 1);
         level.add(dbgGr, Level.DP_HERO);
 
 		label = new h2d.Text(hxd.res.DefaultFont.get());
 		label.textAlign = Center;
+		#if debug
 		Game.ME.add(label, Level.DP_DEBUG);
+		#end
+
+		forceMax = Const.getDataValue0(DCDB.DataKind.forceMax);
     }
 
-	public function move(ang:Float, force:Float) {
-		dx = Math.cos(ang);
-		dy = Math.sin(ang);
+	public inline function setLabel(d:Dynamic) {
+		label.text = Std.string(d);
+	}
 
-		trace(ang + " " + dx + " " + dy);
+	public inline function isMoving():Bool return dx != 0 || dy != 0;
+
+	public function move(ang:Float, force:Float) {
+		dx = Math.cos(ang) * force * forceMax;
+		dy = Math.sin(ang) * force * forceMax;
+
+		// trace(ang + " " + dx + " " + dy);
+	}
+
+	inline function checkLeftCollision():Bool {
+		return dx < 0 && rx < 0.5 && level.ld.hasColl(cx - 1, cy, Hard);
+	}
+
+	inline function checkRightCollision():Bool {
+		return dx > 0 && rx > 0.5 && level.ld.hasColl(cx + 1, cy, Hard);
+	}
+
+	inline function checkTopCollision():Bool {
+		return dy < 0 && ry < 0.5 && level.ld.hasColl(cx, cy - 1, Hard);
+	}
+
+	inline function checkBotCollision():Bool {
+		return dy > 0 && ry > 0.5 && level.ld.hasColl(cx, cy + 1, Hard);
 	}
 
     public function update(dt:Float) {
@@ -71,6 +97,9 @@ class Hero {
 
 		{	// X
 			rx += dx * dt;
+
+			if (checkLeftCollision() || checkRightCollision())
+				dx = -dx;
 			
 			while (rx >= 1) {
 				rx -= 1;
@@ -81,10 +110,12 @@ class Hero {
 				cx -= 1;
 			}
 		}
-		// Physix
 
 		{	// Y
 			ry += dy * dt;
+
+			if (checkTopCollision() || checkBotCollision())
+				dy = -dy;
 			
 			while (ry >= 1) {
 				ry -= 1;
@@ -98,10 +129,17 @@ class Hero {
 
 		dx *= Math.pow(Const.getDataValue0(DCDB.DataKind.frict), dt);
 		dy *= Math.pow(Const.getDataValue0(DCDB.DataKind.frict), dt);
+			
+		if (dx > -Const.getDataValue0(minD) * dt && dx < Const.getDataValue0(minD) * dt
+		&&	dy > -Const.getDataValue0(minD) * dt && dy < Const.getDataValue0(minD) * dt)
+			dx = dy = 0;
 
 		// Render
         dbgGr.setPos(wx, wy);
 
 		label.setPos(globalX, globalY);
+
+		// setLabel(tipyx.Lib.prettyFloat(dx, 3) + " " + tipyx.Lib.prettyFloat(dy, 3));
+		// setLabel(dx + " " + dy);
     }
 }
