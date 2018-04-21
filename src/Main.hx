@@ -30,18 +30,32 @@ class Main extends hxd.App {
 			#end
 		#end
 
+		newGame();
+	}
+
+	function newGame() {
+		if (game != null)
+			game.destroy();
+
 		game = new Game();
 		s2d.addChild(game);
 	}
 
 	override function onResize() {
 		super.onResize();
+
+		game.onResize();
 	}
 
 	override public function update(dt:Float) {
 		super.update(dt);
 
-		game.update();
+		#if debug
+		if (hxd.Key.isPressed(hxd.Key.R))
+			newGame();
+		#end
+
+		game.update(dt);
 	}
 
 	static function main() {

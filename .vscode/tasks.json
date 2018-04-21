@@ -28,7 +28,6 @@
             "suppressTaskName": true,
             "args": ["buildhl.hxml"],
             "showOutput": "silent",
-            "isBuildCommand": true,
         },
         {
             "taskName": "Flash Debug",
