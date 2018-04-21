@@ -3,19 +3,29 @@ class Level extends h2d.Layers {
 	static var num					= 0;
 	public static var DP_BG			= num++;
 	public static var DP_COLL		= num++;
+	public static var DP_ENM		= num++;
 	public static var DP_HERO		= num++;
 	public static var DP_ARROW		= num++;
 	public static var DP_DEBUG		= num++;
+	
+	public var ld					: LevelData;
 
 	var game						: Game;
 
-    var hero                        : en.Hero;
+    public var hero                 : en.Hero;
+	public var enemies				: Array<en.Entity>;
+	public var exit					: {cx:Int, cy:Int};
+
 	var arrow						: h2d.Graphics;
 
-	var mouseX(get, never)			: Int;				inline function get_mouseX():Int return Std.int(hxd.Stage.getInstance().mouseX / scaleX);
-	var mouseY(get, never)			: Int;				inline function get_mouseY():Int return Std.int(hxd.Stage.getInstance().mouseY / scaleY);
+	var mouseX(get, never)			: Int;				inline function get_mouseX():Int return Std.int((hxd.Stage.getInstance().mouseX - this.x) / scaleX);
+	var mouseY(get, never)			: Int;				inline function get_mouseY():Int return Std.int((hxd.Stage.getInstance().mouseY - this.y) / scaleY);
+
+	var tweener						: Tweener;
+	public var cd					: Cooldown;
 	
-	public var ld					: LevelData;
+	var camX						= 0.;
+	var camY						= 0.;
 
 	// GP
 
@@ -23,7 +33,7 @@ class Level extends h2d.Layers {
 	var df							: Float;
 	var fInc						: Bool;
     
-    public function new(game:Game) {
+    public function new(game:Game, id:Null<DCDB.LvlKind>) {
         super();
 
 		this.game = game;
@@ -32,14 +42,16 @@ class Level extends h2d.Layers {
 
         // --------- DEBUG ---------
 
-        ld = new LevelData(this, DCDB.LvlKind.Test);
+		// haxe.EnumTools.createByName
+
+        ld = new LevelData(this, id != null ? id : Test);
 
 		// Draw World
 		for (x in 0...ld.wid)
 			for (y in 0...ld.hei) {
 				if (ld.hasColl(x, y, Hard)) {
 					var gr = new h2d.Graphics();
-					gr.beginFill(0x000000);
+					gr.beginFill(0x222222);
 					gr.drawRect(0, 0, Const.GRID, Const.GRID);
 					gr.setPos(x * Const.GRID, y * Const.GRID);
 					this.add(gr, DP_COLL);
@@ -47,8 +59,16 @@ class Level extends h2d.Layers {
 			}
 
 		// Draw Entities
+		enemies = [];
+
+		for (m in ld.getMarkers(DCDB.LevelMarkerKind.Enemy))
+			enemies.push(new en.Enemy(this, m.cx, m.cy));
+
         var mHero = ld.getMarker(DCDB.LevelMarkerKind.Hero);
         hero = new en.Hero(this, mHero.cx, mHero.cy);
+
+		var mExit = ld.getMarker(Exit);
+		exit = {cx:mExit.cx, cy:mExit.cy};
 
         arrow = new h2d.Graphics();
 		arrow.beginFill(0x00ff00);
@@ -59,6 +79,9 @@ class Level extends h2d.Layers {
 		force = 0;
 		df = 0;
 		fInc = true;
+
+		tweener = new Tweener();
+		cd = new Cooldown();
     }
 
 	public function updateArrow(dt:Float) {
@@ -98,14 +121,46 @@ class Level extends h2d.Layers {
 		// hero.label.text = Std.string(tipyx.Lib.prettyFloat(force));
 	}
 
-    public function onResize() { }
+	public function updateCamera() {
+		camX = -(hero.wx * this.scaleX + (hero.radius * 0.5) - Const.STG_WIDTH * 0.5);
+		this.x += (camX - this.x) * Const.getDataValue0(speedCam);
+
+		camY = -(hero.wy * this.scaleY + (hero.radius * 0.5) - Const.STG_HEIGHT * 0.5);
+		this.y += (camY - this.y) * Const.getDataValue0(speedCam);
+		
+		if (this.x > 0)
+			this.x = 0;
+		if (this.x < -(ld.wid * Const.GRID * this.scaleX - Const.STG_WIDTH))
+			this.x = -(ld.wid * Const.GRID * this.scaleX - Const.STG_WIDTH);
+		
+		if (this.y > 0)
+			this.y = 0;
+		if (this.y < -(ld.hei * Const.GRID * this.scaleY - Const.STG_HEIGHT))
+			this.y = -(ld.hei * Const.GRID * this.scaleY - Const.STG_HEIGHT);
+	}
+
+    public function onResize() {
+	}
+
+	public function destroy() {
+		removeChildren();
+	}
 
     public function update(dt:Float) {
-        // Controller
+		cd.update(dt);
 
 		updateArrow(dt);
 
         // Entity
         hero.update(dt);
+		for (e in enemies)
+			e.update(dt);
+
+		if (hero.cx == exit.cx && hero.cy == exit.cy)
+			trace("End reached!");
+
+		tweener.update();
+
+		updateCamera();
     }
 }

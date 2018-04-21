@@ -15,17 +15,26 @@ class Game extends h2d.Layers {
 		ME = this;
 
 		var bg = new h2d.Graphics();
-		bg.beginFill(0x727272);
+		bg.beginFill(0x585858);
 		bg.drawRect(0, 0, Const.STG_WIDTH, Const.STG_HEIGHT);
 		bg.endFill();
 		this.add(bg, DP_BG);
 
-		level = new Level(this);
+		level = new Level(this, Test);
+		this.add(level, DP_LVL);
+	}
+
+	public function resetLevel(id:Null<DCDB.LvlKind> = null) {
+		if (level != null)
+			level.destroy();
+
+		level = new Level(this, id);
 		this.add(level, DP_LVL);
 	}
 
 	public function onResize() {
-		level.onResize();
+		if (level != null)
+			level.onResize();
 	}
 
 	public function destroy() {
@@ -35,6 +44,7 @@ class Game extends h2d.Layers {
 	}
 
 	public function update(dt:Float) {
-		level.update(dt);
+		if (level != null)
+			level.update(dt);
 	}
 }

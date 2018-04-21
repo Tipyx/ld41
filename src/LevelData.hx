@@ -17,12 +17,15 @@ class LevelData
 	public var colls				: Array<CollData>;
 	public var markers				: Array<Marker>;
 
+	public var pathPoints			: Array<PathPoint>;
+
 	public function new(level:Level, lk:DCDB.LvlKind) {
 		this.level = level;
 		this.lk = lk;
 		
 		colls = [];
 		markers = [];
+		pathPoints = [];
 		
 		lvlInfos = DCDB.lvl.get(lk);
 		
@@ -39,12 +42,69 @@ class LevelData
 					pos++;
 				}
 			}
+			else if (l.name == "pathEnemy") {
+				initPaths(l);
+			}
 		}
+
+		/* for (p in pathPoints) {
+			trace("--------");
+			var t = p.cx + " " + p.cy;
+			for (nt in p.nextTo)
+				t += "\n" + nt.cx + " " + nt.cy;
+			trace(t);
+		} */
 		
 		for (m in lvlInfos.markers)
 			markers.push({kind:m.markerId, cx:m.x, cy:m.y});
 	}
-	
+
+	public inline function initPaths(l:DCDB.Lvl_layers) {
+		var layerData = l.data.data.decode();
+		var pos = 0;
+
+		var allPaths : Array<PathPoint> = [];
+
+		// Init Paths point
+		for (c in layerData) {
+			switch(c) {
+				case 0		: // No Path
+				case 1		: // Path
+					allPaths.push(new PathPoint(pos % wid, Std.int(pos / wid)));
+			}
+			pos++;
+		}
+
+		if (allPaths.length == 0)
+			return;
+
+		// Set pathPoint
+		function isInArray(p:PathPoint, ar:Array<PathPoint>):Bool {
+			for (cp in ar) if (p == cp) return true;
+			return false;
+		}
+
+		while (allPaths.length > 0) {
+			var p = allPaths.pop();
+			for (pc in allPaths) {
+				if (p != pc && Helper.pointNextTo(p, pc)) {
+					p.nextTo.push(pc);
+					pc.nextTo.push(p);
+				}
+			}
+
+			pathPoints.push(p);
+		}
+	}
+
+	public function getPP(cx:Int, cy:Int):PathPoint {
+		for (p in pathPoints)
+			if (p.cx == cx && p.cy == cy)
+				return p;
+
+		return null;
+	}
+
 	public inline function setColl(x:Int, y:Int, type:CollType) {
 		var col = getCollData(x, y);
 		if (col == null)
@@ -88,6 +148,16 @@ class LevelData
 			return null;
 		else
 			throw "You forget to add the marker " + id + " in level " + lk;
+	}
+
+	public function getMarkers(id:DCDB.LevelMarkerKind):Array<Marker> {
+		var out = [];
+
+		for (m in markers)
+			if (m.kind == id)
+				out.push(m);
+
+		return out;
 	}
 	
 }
