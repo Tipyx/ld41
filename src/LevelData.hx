@@ -121,7 +121,9 @@ class LevelData
 		return null;
 	}
 	
-	public function hasColl(cx:Int, cy:Int, ct:CollType):Bool return getColl(cx, cy) == ct;
+	public function hasColl(cx:Int, cy:Int, ct:CollType):Bool {
+		return getColl(cx, cy) == ct || cx >= wid || cx < 0 || cy >= hei || cy < 0;
+	}
 	
 	public function getCollData(cx:Int, cy:Int):Null<CollData> {
 		for (c in colls)

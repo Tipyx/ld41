@@ -6,13 +6,15 @@ class Level extends h2d.Layers {
 	public static var DP_EXIT		= num++;
 	public static var DP_ENM		= num++;
 	public static var DP_HERO		= num++;
-	public static var DP_ARROW		= num++;
 	public static var DP_FX			= num++;
+	public static var DP_ARROW		= num++;
 	public static var DP_DEBUG		= num++;
 	
 	var game						: Game;
+
 	var fx							: Fx;
 
+	var levelRender					: LevelRender;
 	public var id					: DCDB.LvlKind;
 	public var ld					: LevelData;
 
@@ -20,7 +22,7 @@ class Level extends h2d.Layers {
 	public var enemies				: Array<en.Entity>;
 	public var exit					: en.Exit;
 
-	var arrow						: h2d.Graphics;
+	var arrow						: Arrow;
 
 	var mouseX(get, never)			: Int;				inline function get_mouseX():Int return Std.int((hxd.Stage.getInstance().mouseX - this.x) / scaleX);
 	var mouseY(get, never)			: Int;				inline function get_mouseY():Int return Std.int((hxd.Stage.getInstance().mouseY - this.y) / scaleY);
@@ -54,16 +56,8 @@ class Level extends h2d.Layers {
         ld = new LevelData(this, id);
 
 		// Draw World
-		for (x in 0...ld.wid)
-			for (y in 0...ld.hei) {
-				if (ld.hasColl(x, y, Hard)) {
-					var gr = new h2d.Graphics();
-					gr.beginFill(0x515151);
-					gr.drawRect(0, 0, Const.GRID, Const.GRID);
-					gr.setPos(x * Const.GRID, y * Const.GRID);
-					this.add(gr, DP_COLL);
-				}
-			}
+		levelRender = new LevelRender(this);
+		levelRender.init();
 
 		// Draw Entities
 		enemies = [];
@@ -77,9 +71,7 @@ class Level extends h2d.Layers {
 		var mExit = ld.getMarker(Exit);
 		exit = new en.Exit(this, mExit.cx, mExit.cy);
 
-        arrow = new h2d.Graphics();
-		arrow.beginFill(0x00ff00);
-		arrow.drawRect(0, -5, 50, 10);
+        arrow = new Arrow(this);
 		this.add(arrow, DP_ARROW);
 
 		// GP
@@ -124,7 +116,7 @@ class Level extends h2d.Layers {
 
 		arrow.visible = true;
 		arrow.setPos(hero.wx, hero.wy);
-		arrow.scaleX = force;
+		arrow.updateGauge(force);
 		arrow.rotation = ang;
 
 		// hero.label.text = Std.string(tipyx.Lib.prettyFloat(dist) + " " + tipyx.Lib.prettyFloat(ang));
