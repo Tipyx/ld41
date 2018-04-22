@@ -14,7 +14,9 @@ class Main extends hxd.App {
 	public static var ME		: Main;
 
 	var game			: Game;
+	#if debug
 	public var console	: h2d.Console;
+	#end
 
 	var end				: ui.End;
 	var title			: ui.Title;
@@ -31,6 +33,7 @@ class Main extends hxd.App {
 
 		this.wantedFPS = Const.FPS;
 		
+		#if debug
 		console = new h2d.Console(hxd.res.DefaultFont.get());
 		// console =  new h2d.Console(Assets.ME.dbgFont);
 		console.addCommand("level", "go to Level XXX", [{name:"ID", t:AString}], function(t:String) {
@@ -44,16 +47,17 @@ class Main extends hxd.App {
 		});
 		s2d.add(console, DP_CONSOLE);
 		haxe.Log.trace = function(v, ?i) console.log(i.className + "@" + i.lineNumber + " : " + v);
-
-		hxd.Res.data.watch(function() {
-			DCDB.load(hxd.Res.data.entry.getBytes().toString());
-			console.log("Cdb reloaded!");
-
-			newGame();
-		});
+		#end
 
 		#if hl
 			#if debug
+			hxd.Res.data.watch(function() {
+				DCDB.load(hxd.Res.data.entry.getBytes().toString());
+				console.log("Cdb reloaded!");
+
+				newGame();
+			});
+
 			hxd.res.Resource.LIVE_UPDATE = true;
 			trace("hl + debug");
 			#else
