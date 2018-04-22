@@ -58,19 +58,35 @@ class Entity {
 	}
 
 	inline function checkLeftCollision():Bool {
-		return dx < 0 && rx < 0.5 && level.ld.hasColl(cx - 1, cy, Hard);
+		// return dx < 0 && rx < 0.25 && level.ld.hasColl(cx - 1, cy, Hard);
+		return	dx < 0 && rx < 0.25
+		&&		(level.ld.hasColl(cx - 1, cy, Hard)
+		||		(dy < 0 && ry < 0.25 && level.ld.hasColl(cx - 1, cy - 1, Hard))
+		||		(dy > 0 && ry > 0.75 && level.ld.hasColl(cx - 1, cy + 1, Hard)));
 	}
 
 	inline function checkRightCollision():Bool {
-		return dx > 0 && rx > 0.5 && level.ld.hasColl(cx + 1, cy, Hard);
+		// return dx > 0 && rx > 0.75 && level.ld.hasColl(cx + 1, cy, Hard);
+		return	dx > 0 && rx > 0.75
+		&&		(level.ld.hasColl(cx + 1, cy, Hard)
+		||		(dy < 0 && ry < 0.25 && level.ld.hasColl(cx + 1, cy - 1, Hard))
+		||		(dy > 0 && ry > 0.75 && level.ld.hasColl(cx + 1, cy + 1, Hard)));
 	}
 
 	inline function checkTopCollision():Bool {
-		return dy < 0 && ry < 0.5 && level.ld.hasColl(cx, cy - 1, Hard);
+		// return dy < 0 && ry < 0.25 && level.ld.hasColl(cx, cy - 1, Hard);
+		return	dy < 0 && ry < 0.25
+		&&		(level.ld.hasColl(cx, cy - 1, Hard)
+		||		(dx < 0 && rx < 0.25 && level.ld.hasColl(cx - 1, cy - 1, Hard))
+		||		(dx > 0 && rx > 0.75 && level.ld.hasColl(cx + 1, cy - 1, Hard)));
 	}
 
 	inline function checkBotCollision():Bool {
-		return dy > 0 && ry > 0.5 && level.ld.hasColl(cx, cy + 1, Hard);
+		// return dy > 0 && ry > 0.75 && level.ld.hasColl(cx, cy + 1, Hard);
+		return	dy > 0 && ry > 0.75
+		&&		(level.ld.hasColl(cx, cy + 1, Hard)
+		||		(dx < 0 && rx < 0.25 && level.ld.hasColl(cx - 1, cy + 1, Hard))
+		||		(dx > 0 && rx > 0.75 && level.ld.hasColl(cx + 1, cy + 1, Hard)));
 	}
 	
     public function update(dt:Float) {

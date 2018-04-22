@@ -5,10 +5,14 @@ class Game extends h2d.Layers {
 	static var num					= 0;
 	public static var DP_BG			= num++;
 	public static var DP_LVL		= num++;
+	public static var DP_FX			= num++;
+	public static var DP_TRNS		= num++;
 	public static var DP_DEBUG		= num++;
 
 	var levels						: Array<DCDB.LvlKind>;
 	var level						: Level;
+
+	public var tCaught				: TransitionCaught;
 
 	public function new() {
 		super();
@@ -16,7 +20,7 @@ class Game extends h2d.Layers {
 		ME = this;
 
 		var bg = new h2d.Graphics();
-		bg.beginFill(0x585858);
+		bg.beginFill(0xb1b9be);
 		bg.drawRect(0, 0, Const.STG_WIDTH, Const.STG_HEIGHT);
 		bg.endFill();
 		this.add(bg, DP_BG);
@@ -27,10 +31,24 @@ class Game extends h2d.Layers {
 				levels.push(lvl.id);
 	
 		#if debug
+		// level = new Level(this, TestLevel);
 		level = new Level(this, Test);
 		#else
 		level = new Level(this, levels[0]);
 		#end
+		this.add(level, DP_LVL);
+
+		tCaught = new TransitionCaught(resetLevel);
+		this.add(tCaught, DP_TRNS);
+	}
+
+	public function resetLevel() {
+		if (level != null) {
+			level.destroy();
+			removeChild(level);
+		}
+
+		level = new Level(this, level.id);
 		this.add(level, DP_LVL);
 	}
 
@@ -68,5 +86,7 @@ class Game extends h2d.Layers {
 	public function update(dt:Float) {
 		if (level != null)
 			level.update(dt);
+
+		tCaught.update(dt);
 	}
 }

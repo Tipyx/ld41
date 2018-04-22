@@ -46,17 +46,9 @@ class LevelData
 				initPaths(l);
 			}
 		}
-
-		/* for (p in pathPoints) {
-			trace("--------");
-			var t = p.cx + " " + p.cy;
-			for (nt in p.nextTo)
-				t += "\n" + nt.cx + " " + nt.cy;
-			trace(t);
-		} */
 		
 		for (m in lvlInfos.markers)
-			markers.push({kind:m.markerId, cx:m.x, cy:m.y});
+			markers.push({kind:m.markerId, cx:m.x, cy:m.y, customId:m.customId});
 	}
 
 	public inline function initPaths(l:DCDB.Lvl_layers) {

@@ -4,6 +4,7 @@ class Const {
 	public static var STG_HEIGHT		: Int;
 
 	public static var PIXEL_RATIO		: Int;
+	public static var FPS				: Int;
 
 	public static var GRID				: Int;
 
@@ -11,6 +12,8 @@ class Const {
 
 	public static function INIT() {
 		RESIZE();
+
+		FPS = Std.int(getDataValue0(fps));
 
 		ALIB = new ALib(hxd.Res.ss);
 	}

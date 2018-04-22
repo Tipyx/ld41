@@ -18,7 +18,7 @@ class Main extends hxd.App {
 		ME = this;
 		Const.INIT();
 
-		wantedFPS = 60;
+		wantedFPS = Const.FPS;
 		
 		console = new h2d.Console(hxd.res.DefaultFont.get());
 		// console =  new h2d.Console(Assets.ME.dbgFont);

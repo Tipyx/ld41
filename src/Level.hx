@@ -7,9 +7,11 @@ class Level extends h2d.Layers {
 	public static var DP_ENM		= num++;
 	public static var DP_HERO		= num++;
 	public static var DP_ARROW		= num++;
+	public static var DP_FX			= num++;
 	public static var DP_DEBUG		= num++;
 	
 	var game						: Game;
+	var fx							: Fx;
 
 	public var id					: DCDB.LvlKind;
 	public var ld					: LevelData;
@@ -25,6 +27,7 @@ class Level extends h2d.Layers {
 
 	var tweener						: Tweener;
 	public var cd					: Cooldown;
+	var delayer						: Delayer;
 	
 	var camX						= 0.;
 	var camY						= 0.;
@@ -34,12 +37,16 @@ class Level extends h2d.Layers {
 	var force						: Float;
 	var df							: Float;
 	var fInc						: Bool;
+
+	public var isCaught				: Bool;
     
     public function new(game:Game, id:DCDB.LvlKind) {
         super();
 		
 		this.game = game;
 		this.id = id;
+
+		fx = new Fx(this);
 
         this.setScale(Const.PIXEL_RATIO);
 
@@ -61,7 +68,7 @@ class Level extends h2d.Layers {
 		enemies = [];
 
 		for (m in ld.getMarkers(DCDB.LevelMarkerKind.Enemy))
-			enemies.push(new en.Enemy(this, m.cx, m.cy));
+			enemies.push(new en.Enemy(this, m.cx, m.cy, m.customId));
 
         var mHero = ld.getMarker(DCDB.LevelMarkerKind.Hero);
         hero = new en.Hero(this, mHero.cx, mHero.cy);
@@ -83,12 +90,15 @@ class Level extends h2d.Layers {
 		df = 0;
 		fInc = true;
 
+		isCaught = false;
+
 		tweener = new Tweener();
-		cd = new Cooldown();
+		cd = new Cooldown(Const.FPS);
+		delayer = new Delayer(Const.FPS);
     }
 
 	public function updateArrow(dt:Float) {
-		if (hero.isMoving())
+		if (hero.isMoving() || isCaught)
 			return;
 
 		df = (Const.getDataValue0(DCDB.DataKind.forceBase) + (Const.getDataValue0(DCDB.DataKind.forceDelta) * (force / 1))) * dt;
@@ -141,6 +151,28 @@ class Level extends h2d.Layers {
 			this.y = -(ld.hei * Const.GRID * this.scaleY - Const.STG_HEIGHT);
 	}
 
+	public function onCaught() {
+		isCaught = true;
+
+		hero.stopMove();
+
+		fx.redFlash();
+
+		var caughtText = new h2d.Text(hxd.res.DefaultFont.get());
+		caughtText.text = "Caught!";
+		caughtText.textAlign = Center;
+		caughtText.setScale(scaleX);
+		game.add(caughtText, DP_FX);
+
+		caughtText.setPos((Const.STG_WIDTH >> 1), -(Const.STG_HEIGHT >> 1));
+		tweener.create(Const.FPS * 0.5, caughtText.y, Const.STG_HEIGHT >> 1);
+
+		delayer.setS("tCaught", 1.5, function() {
+			game.tCaught.init();
+			caughtText.remove();
+		});
+	}
+
     public function onResize() {
 	}
 
@@ -150,6 +182,7 @@ class Level extends h2d.Layers {
 
     public function update(dt:Float) {
 		cd.update(dt);
+		delayer.update(dt);
 
 		updateArrow(dt);
 
@@ -164,5 +197,6 @@ class Level extends h2d.Layers {
 		tweener.update();
 
 		updateCamera();
+		fx.update(dt);
     }
 }

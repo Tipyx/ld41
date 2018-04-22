@@ -16,9 +16,10 @@ typedef CollData = {
 }
 
 typedef Marker = {
-	var kind	: DCDB.LevelMarkerKind;
-	var cx		: Int;
-	var cy		: Int;
+	var kind		: DCDB.LevelMarkerKind;
+	var cx			: Int;
+	var cy			: Int;
+	var customId	: Null<String>;
 }
 
 class PathPoint {
