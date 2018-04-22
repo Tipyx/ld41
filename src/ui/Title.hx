@@ -31,6 +31,7 @@ class Title extends h2d.Layers {
 
 	public function destroy() {
 		removeChildren();
+		remove();
 	}
 
 	public function update(dt:Float) {

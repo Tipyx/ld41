@@ -21,7 +21,6 @@ class Fx {
 		if (flash != null) {
 			flash.alpha -= 0.01 * dt;
 			if (flash.alpha < 0) {
-				Game.ME.removeChild(flash);
 				flash.remove();
 				flash = null;
 			}

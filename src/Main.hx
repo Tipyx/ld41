@@ -29,7 +29,7 @@ class Main extends hxd.App {
 		ME = this;
 		Const.INIT();
 
-		wantedFPS = Const.FPS;
+		this.wantedFPS = Const.FPS;
 		
 		console = new h2d.Console(hxd.res.DefaultFont.get());
 		// console =  new h2d.Console(Assets.ME.dbgFont);
@@ -47,7 +47,7 @@ class Main extends hxd.App {
 
 		hxd.Res.data.watch(function() {
 			DCDB.load(hxd.Res.data.entry.getBytes().toString());
-			console.log("Cdb reloaded !");
+			console.log("Cdb reloaded!");
 
 			newGame();
 		});
@@ -69,6 +69,15 @@ class Main extends hxd.App {
 		transition = new Transition();
 		s2d.add(transition, DP_TRANSITION);
 
+		showTitle();
+	}
+
+	public function showTitle() {
+		if (end != null) {
+			end.destroy();
+			end = null;
+		}
+
 		title = new ui.Title();
 		s2d.add(title, DP_UI);
 	}
@@ -76,7 +85,6 @@ class Main extends hxd.App {
 	public function newGame() {
 		if (title != null) {
 			title.destroy();
-			s2d.removeChild(title);
 			title = null;
 		}
 
@@ -100,7 +108,8 @@ class Main extends hxd.App {
 	override function onResize() {
 		super.onResize();
 
-		game.onResize();
+		if (game != null)
+			game.onResize();
 	}
 	
 	var slowMo			: Bool;

@@ -7,7 +7,7 @@ class Level extends h2d.Layers {
 	public static var DP_ENM		= num++;
 	public static var DP_HERO		= num++;
 	public static var DP_FX			= num++;
-	public static var DP_ARROW		= num++;
+	public static var DP_UI			= num++;
 	public static var DP_DEBUG		= num++;
 	
 	var game						: Game;
@@ -74,7 +74,7 @@ class Level extends h2d.Layers {
 		exit = new en.Exit(this, mExit.cx, mExit.cy);
 
         arrow = new Arrow(this);
-		this.add(arrow, DP_ARROW);
+		this.add(arrow, DP_UI);
 
 		// GP
 		force = 0;
@@ -194,6 +194,8 @@ class Level extends h2d.Layers {
 		hero.destroy();
 		for (e in enemies)
 			e.destroy();
+
+		remove();
 	}
 
     public function update(dt:Float) {

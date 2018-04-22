@@ -5,8 +5,14 @@ class End extends h2d.Layers {
 	var tweener			: Tweener;
 	var delayer			: Delayer;
 
+	var clicDone		: Bool;
+	var enableClick		: Bool;
+
 	public function new(totalShots:Int) {
 		super();
+
+		clicDone = false;
+		enableClick = false;
 
 		tweener = new Tweener();
 		delayer = new Delayer(Const.FPS);
@@ -27,7 +33,7 @@ class End extends h2d.Layers {
 		t1.textColor = 0;
 		t1.setScale(3);
 		t1.textAlign = MultilineCenter;
-		t1.text = "Thank you for playing my game !";
+		t1.text = "Thank you for playing my game!";
 
 		var t2 = new h2d.Text(hxd.res.DefaultFont.get(), flow);
 		t2.textColor = 0;
@@ -78,12 +84,24 @@ class End extends h2d.Layers {
 
 				this.addChild(gp);
 			}
+
+			enableClick = true;
 		});
+	}
+
+	public function destroy() {
+		removeChildren();
+		remove();
 	}
 
 	public function update(dt:Float) {
 		tweener.update();
 		delayer.update(dt);
+
+		if (enableClick && !clicDone && hxd.Key.isReleased(hxd.Key.MOUSE_LEFT)) {
+			clicDone = true;
+			Main.ME.transition.init(() -> Main.ME.showTitle());
+		}
 	}
 
 }
