@@ -6,13 +6,17 @@ class Game extends h2d.Layers {
 	public static var DP_BG			= num++;
 	public static var DP_LVL		= num++;
 	public static var DP_FX			= num++;
-	public static var DP_TRNS		= num++;
+	public static var DP_HUD			= num++;
 	public static var DP_DEBUG		= num++;
 
 	var levels						: Array<DCDB.LvlKind>;
 	var level						: Level;
 
-	public var transition			: Transition;
+	public var hud					: ui.HUD;
+
+	// GP
+
+	public var totalShots			: Int;
 
 	public function new() {
 		super();
@@ -25,6 +29,9 @@ class Game extends h2d.Layers {
 		bg.endFill();
 		this.add(bg, DP_BG);
 
+		hud = new ui.HUD(this);
+		this.add(hud, DP_HUD);
+
 		levels = [];
 		for (lvl in DCDB.lvl.all)
 			if (lvl.group == DCDB.Lvl_group.Main)
@@ -32,14 +39,14 @@ class Game extends h2d.Layers {
 	
 		#if debug
 		// level = new Level(this, TestLevel);
-		level = new Level(this, Test);
+		// level = new Level(this, Test);
+		level = new Level(this, levels[levels.length - 1]);
 		#else
 		level = new Level(this, levels[0]);
 		#end
 		this.add(level, DP_LVL);
 
-		transition = new Transition();
-		this.add(transition, DP_TRNS);
+		totalShots = 0;
 	}
 
 	public function resetLevel() {
@@ -66,8 +73,10 @@ class Game extends h2d.Layers {
 		if (level == null)
 			throw "goToNextLevel : not supposed to happened here";
 
+		totalShots += level.numShots;
+
 		if (levels.indexOf(level.id) == levels.length - 1)
-			throw "TODO : reach last level";
+			Main.ME.showEnd(totalShots);
 		else
 			goToLevel(levels[levels.indexOf(level.id) + 1]);
 	}
@@ -86,7 +95,5 @@ class Game extends h2d.Layers {
 	public function update(dt:Float) {
 		if (level != null)
 			level.update(dt);
-
-		transition.update(dt);
 	}
 }

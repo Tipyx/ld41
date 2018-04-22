@@ -4,7 +4,7 @@ class Hero extends Entity {
 	
 	var shadow				: ASprite;
 	var spr					: ASprite;
-	var lockSpr				: ASprite;
+	var dizzy				: ASprite;
 
 	var forceMax			: Float;
 
@@ -25,11 +25,10 @@ class Hero extends Entity {
 		spr.play("hero", -1);
 		spr.speed = 10;
         level.add(spr, Level.DP_HERO);
-		radius = Const.GRID >> 1;
 
-		lockSpr = new ASprite(Const.ALIB, "lock");
-		lockSpr.setCenterRatio(0.5, 0.5);
-        level.add(lockSpr, Level.DP_HERO);
+		dizzy = new ASprite(Const.ALIB, "dizzy");
+		dizzy.setCenterRatio(0.5, 0.5);
+        level.add(dizzy, Level.DP_HERO);
 
 		forceMax = Const.getDataValue0(DCDB.DataKind.forceMax);
     }
@@ -65,8 +64,9 @@ class Hero extends Entity {
 		super.update(dt);
 
 		// Render
-        lockSpr.setPos(wx, wy);
-		lockSpr.visible = isMoving();
+        dizzy.setPos(wx, wy - Const.GRID);
+		dizzy.rotation -= 0.1 * dt;
+		dizzy.visible = isMoving();
 
         shadow.setPos(wx, wy);
         spr.setPos(wx, wy);

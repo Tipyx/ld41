@@ -40,6 +40,8 @@ class Level extends h2d.Layers {
 	var df							: Float;
 	var fInc						: Bool;
 
+	public var numShots				: Int;
+
 	public var isCaught				: Bool;
 	public var endReached			: Bool;
     
@@ -79,12 +81,16 @@ class Level extends h2d.Layers {
 		df = 0;
 		fInc = true;
 
+		numShots = 0;
+
 		isCaught = false;
 		endReached = false;
 
 		tweener = new Tweener();
 		cd = new Cooldown(Const.FPS);
 		delayer = new Delayer(Const.FPS);
+
+		game.hud.updateStatus(numShots);
     }
 
 	public function updateArrow(dt:Float) {
@@ -104,8 +110,12 @@ class Level extends h2d.Layers {
 
 		var ang = Math.atan2(mouseY - hero.wy, mouseX - hero.wx);
 
-		if (hxd.Key.isReleased(hxd.Key.MOUSE_LEFT))
+		if (hxd.Key.isReleased(hxd.Key.MOUSE_LEFT)) {
 			hero.move(ang, force);
+
+			numShots++;
+			game.hud.updateStatus(numShots);
+		}
 
 		if (!hxd.Key.isDown(hxd.Key.MOUSE_LEFT)) {
 			arrow.visible = false;
@@ -158,7 +168,7 @@ class Level extends h2d.Layers {
 		tweener.create(Const.FPS * 0.5, caughtText.y, Const.STG_HEIGHT >> 1);
 
 		delayer.setS("tCaught", 1.5, function() {
-			game.transition.init(game.resetLevel);
+			Main.ME.transition.init(game.resetLevel);
 			caughtText.remove();
 		});
 	}
@@ -170,7 +180,7 @@ class Level extends h2d.Layers {
 		hero.disappear();
 
 		delayer.setS("tEnd", 0.5, function() {
-			game.transition.init(game.goToNextLevel);
+			Main.ME.transition.init(game.goToNextLevel);
 		});
 	}
 

@@ -60,6 +60,10 @@ class Enemy extends Entity {
 	inline function angToHero() return Math.atan2(level.hero.wy - wy, level.hero.wx - wx);
 
 	function heroIsVisible():Bool {
+		#if debug
+		return false;
+		#end
+
 		return (Math.abs(Lib.angularDist(angToHero(), ang)) < lAng && Lib.distance(wx, wy, level.hero.wx, level.hero.wy) <= sightDistance)
 		||		Lib.distance(wx, wy, level.hero.wx, level.hero.wy) <= radius + level.hero.radius;
 	}
@@ -105,7 +109,7 @@ class Enemy extends Entity {
 
 		super.update(dt);
 
-		if (!level.isCaught && heroIsVisible()) {
+		if (!level.isCaught && !level.endReached && heroIsVisible()) {
 			changeLightColor();
 			level.onCaught();
 		}

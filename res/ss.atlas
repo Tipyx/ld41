@@ -1,187 +1,215 @@
 
 ss.png
-size: 126,78
+size: 1024,1024
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 arrowGauge
   rotate: false
-  xy: 1, 1
+  xy: 75, 991
   size: 41, 16
   orig: 41, 16
   offset: 0, 0
   index: -1
 arrowOutline
   rotate: false
-  xy: 44, 1
+  xy: 89, 965
   size: 41, 16
   orig: 41, 16
   offset: 0, 0
   index: -1
 bigWall_0
   rotate: false
-  xy: 87, 1
+  xy: 53, 965
   size: 16, 24
   orig: 16, 24
   offset: 0, 0
   index: -1
 bigWall_1
   rotate: false
-  xy: 105, 1
+  xy: 53, 991
   size: 16, 24
   orig: 16, 24
   offset: 0, 0
   index: -1
 bigWall_2
   rotate: false
-  xy: 1, 19
+  xy: 71, 965
   size: 16, 24
   orig: 16, 24
   offset: 0, 0
   index: -1
 corner
   rotate: false
-  xy: 73, 19
+  xy: 1, 1017
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
   index: -1
+dizzy
+  rotate: false
+  xy: 91, 1009
+  size: 12, 11
+  orig: 16, 16
+  offset: 2, 2
+  index: -1
+end
+  rotate: false
+  xy: 1, 1
+  size: 720, 480
+  orig: 720, 480
+  offset: 0, 0
+  index: -1
 exit
   rotate: false
-  xy: 19, 19
+  xy: 118, 983
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 foe
   rotate: false
-  xy: 37, 19
+  xy: 132, 965
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 hero_0
   rotate: false
-  xy: 55, 19
+  xy: 125, 1001
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 hero_1
   rotate: false
-  xy: 73, 27
+  xy: 136, 983
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 hero_2
   rotate: false
-  xy: 91, 27
+  xy: 150, 965
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 hero_3
   rotate: false
-  xy: 109, 27
+  xy: 143, 1001
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 hero_4
   rotate: false
-  xy: 19, 37
+  xy: 154, 983
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 hero_5
   rotate: false
-  xy: 1, 45
+  xy: 168, 965
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 hero_6
   rotate: false
-  xy: 37, 37
+  xy: 161, 1001
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 hero_7
   rotate: false
-  xy: 55, 37
+  xy: 172, 983
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 lock
   rotate: false
-  xy: 1, 63
+  xy: 75, 1009
   size: 14, 14
   orig: 16, 16
   offset: 1, 1
   index: -1
 shadow
   rotate: false
-  xy: 73, 63
+  xy: 105, 1009
   size: 18, 10
   orig: 18, 18
   offset: 0, 0
   index: -1
+shotCounter
+  rotate: false
+  xy: 1, 965
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
 side
   rotate: false
-  xy: 123, 1
+  xy: 71, 991
   size: 2, 24
   orig: 2, 24
   offset: 0, 0
   index: -1
+title
+  rotate: false
+  xy: 1, 483
+  size: 720, 480
+  orig: 720, 480
+  offset: 0, 0
+  index: -1
 wall_0
   rotate: false
-  xy: 73, 45
+  xy: 186, 965
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 wall_1
   rotate: false
-  xy: 91, 45
+  xy: 179, 1001
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 wall_2
   rotate: false
-  xy: 109, 45
+  xy: 190, 983
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 wall_3
   rotate: false
-  xy: 19, 55
+  xy: 204, 965
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 wall_4
   rotate: false
-  xy: 37, 55
+  xy: 197, 1001
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 wall_5
   rotate: false
-  xy: 55, 55
+  xy: 208, 983
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 ww
   rotate: false
-  xy: 77, 19
+  xy: 1, 1021
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
