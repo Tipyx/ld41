@@ -7,4 +7,7 @@ class Helper {
 		||		(p1.cx == p2.cx + 1 && p1.cy == p2.cy);
 	}
 
+	public static function distBetweenEnt(e1:en.Entity, e2:en.Entity) {
+		return Lib.distance(e1.wx, e1.wy, e2.wx, e2.wy);
+	}
 }

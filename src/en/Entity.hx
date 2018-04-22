@@ -88,6 +88,10 @@ class Entity {
 		||		(dx < 0 && rx < 0.25 && level.ld.hasColl(cx - 1, cy + 1, Hard))
 		||		(dx > 0 && rx > 0.75 && level.ld.hasColl(cx + 1, cy + 1, Hard)));
 	}
+
+	public function destroy() {
+		label.remove();
+	}
 	
     public function update(dt:Float) {
 		cd.update(dt);

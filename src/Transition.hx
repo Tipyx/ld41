@@ -1,4 +1,4 @@
-class TransitionCaught extends h2d.Sprite {
+class Transition extends h2d.Sprite {
 
 	var mask					: ASprite;
 
@@ -9,10 +9,8 @@ class TransitionCaught extends h2d.Sprite {
 
 	var alphaSpeed				: Float;
 
-	public function new(cb:Void->Void) {
+	public function new() {
 		super();
-
-		this.cb = cb;
 
 		inc = true;
 		isStopped = true;
@@ -25,7 +23,9 @@ class TransitionCaught extends h2d.Sprite {
 		this.addChild(mask);
 	}
 
-	public function init() {
+	public function init(cb:Void->Void) {
+		this.cb = cb;
+
 		mask.alpha = 0;
 		inc = true;
 		isStopped = false;
@@ -44,6 +44,7 @@ class TransitionCaught extends h2d.Sprite {
 				mask.alpha = 1;
 				inc = false;
 				cb();
+				cb = null;
 			}
 		}
 		else {

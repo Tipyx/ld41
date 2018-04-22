@@ -2,7 +2,7 @@ package en;
 
 class Enemy extends Entity {
 
-    var dbgGr               : h2d.Graphics;
+    var spr					: ASprite;
     var light               : h2d.Graphics;
 
 	var destPP				: PathPoint;
@@ -19,10 +19,9 @@ class Enemy extends Entity {
 
 		radius = Const.GRID >> 1;
 
-        dbgGr = new h2d.Graphics();
-        dbgGr.beginFill(0xd3302c);
-        dbgGr.drawCircle(0, 0, radius);
-        level.add(dbgGr, Level.DP_HERO);
+		spr = new ASprite(Const.ALIB, "foe");
+		spr.setCenterRatio(0.5, 0.5);
+        level.add(spr, Level.DP_ENM);
 
 		level.enemies.push(this);
 
@@ -74,6 +73,13 @@ class Enemy extends Entity {
 		light.lineTo(Math.cos(lAng) * sightDistance, -Math.sin(lAng) * sightDistance);
 	}
 
+	override public function destroy() {
+		super.destroy();
+
+		spr.remove();
+		light.remove();
+	}
+
 	override public function update(dt:Float) {
 		if (!level.isCaught) {
 			if (Lib.distance(wx, wy, destPP.wx, destPP.wy) < 5 && level.ld.getPP(cx, cy) == destPP) {
@@ -106,8 +112,8 @@ class Enemy extends Entity {
 
 		// RENDER
 
-		dbgGr.setPos(wx, wy);
-		dbgGr.rotation = ang;
+		spr.setPos(wx, wy);
+		// spr.rotation = ang;
 
 		light.setPos(wx, wy);
 		light.rotation = ang;

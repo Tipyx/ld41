@@ -2,6 +2,7 @@ package en;
 
 class Hero extends Entity {
 	
+	var shadow				: ASprite;
 	var spr					: ASprite;
 	var lockSpr				: ASprite;
 
@@ -14,11 +15,17 @@ class Hero extends Entity {
 
 		radius = Const.GRID >> 1;
 
+		shadow = new ASprite(Const.ALIB, "shadow");
+		shadow.setCenterRatio(0.5, 0);
+		shadow.alpha = 0.5;
+        level.add(shadow, Level.DP_HERO);
+
 		spr = new ASprite(Const.ALIB, "hero");
 		spr.setCenterRatio(0.5, 0.5);
 		spr.play("hero", -1);
 		spr.speed = 10;
         level.add(spr, Level.DP_HERO);
+		radius = Const.GRID >> 1;
 
 		lockSpr = new ASprite(Const.ALIB, "lock");
 		lockSpr.setCenterRatio(0.5, 0.5);
@@ -26,6 +33,15 @@ class Hero extends Entity {
 
 		forceMax = Const.getDataValue0(DCDB.DataKind.forceMax);
     }
+
+	public inline function disappear() {
+		shadow.visible = false;
+		level.tweener.create(Const.FPS * 0.5, spr.alpha, 0);
+	}
+
+	public inline function isTooFast() {
+		return Math.abs(dx) > 0.12 || Math.abs(dy) > 0.12;
+	}
 
 	public inline function isMoving():Bool return dx != 0 || dy != 0;
 
@@ -38,6 +54,13 @@ class Hero extends Entity {
 		dy = Math.sin(ang) * force * forceMax;
 	}
 
+	override public function destroy() {
+		super.destroy();
+
+		spr.remove();
+		shadow.remove();
+	}
+
     override public function update(dt:Float) {
 		super.update(dt);
 
@@ -45,12 +68,14 @@ class Hero extends Entity {
         lockSpr.setPos(wx, wy);
 		lockSpr.visible = isMoving();
 
+        shadow.setPos(wx, wy);
         spr.setPos(wx, wy);
 
 		if (isMoving())
 			spr.rotation = Math.atan2(dy, dx) + Math.PI / 2;
 		spr.speed = (Math.abs(dx) + Math.abs(dy)) * 100;
-		// setLabel(Lib.prettyFloat(spr.speed));
+
+		// setLabel(Lib.prettyFloat(dx) + " " + Lib.prettyFloat(dy));
 
     }
 }

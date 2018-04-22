@@ -12,7 +12,7 @@ class Game extends h2d.Layers {
 	var levels						: Array<DCDB.LvlKind>;
 	var level						: Level;
 
-	public var tCaught				: TransitionCaught;
+	public var transition			: Transition;
 
 	public function new() {
 		super();
@@ -20,7 +20,7 @@ class Game extends h2d.Layers {
 		ME = this;
 
 		var bg = new h2d.Graphics();
-		bg.beginFill(0xb1b9be);
+		bg.beginFill(0xc3c3c3);
 		bg.drawRect(0, 0, Const.STG_WIDTH, Const.STG_HEIGHT);
 		bg.endFill();
 		this.add(bg, DP_BG);
@@ -38,8 +38,8 @@ class Game extends h2d.Layers {
 		#end
 		this.add(level, DP_LVL);
 
-		tCaught = new TransitionCaught(resetLevel);
-		this.add(tCaught, DP_TRNS);
+		transition = new Transition();
+		this.add(transition, DP_TRNS);
 	}
 
 	public function resetLevel() {
@@ -87,6 +87,6 @@ class Game extends h2d.Layers {
 		if (level != null)
 			level.update(dt);
 
-		tCaught.update(dt);
+		transition.update(dt);
 	}
 }

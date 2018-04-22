@@ -18,14 +18,14 @@ class Level extends h2d.Layers {
 
     public var hero                 : en.Hero;
 	public var enemies				: Array<en.Entity>;
-	public var exit					: {cx:Int, cy:Int, spr:ASprite};
+	public var exit					: en.Exit;
 
 	var arrow						: h2d.Graphics;
 
 	var mouseX(get, never)			: Int;				inline function get_mouseX():Int return Std.int((hxd.Stage.getInstance().mouseX - this.x) / scaleX);
 	var mouseY(get, never)			: Int;				inline function get_mouseY():Int return Std.int((hxd.Stage.getInstance().mouseY - this.y) / scaleY);
 
-	var tweener						: Tweener;
+	public var tweener				: Tweener;
 	public var cd					: Cooldown;
 	var delayer						: Delayer;
 	
@@ -39,6 +39,7 @@ class Level extends h2d.Layers {
 	var fInc						: Bool;
 
 	public var isCaught				: Bool;
+	public var endReached			: Bool;
     
     public function new(game:Game, id:DCDB.LvlKind) {
         super();
@@ -57,7 +58,7 @@ class Level extends h2d.Layers {
 			for (y in 0...ld.hei) {
 				if (ld.hasColl(x, y, Hard)) {
 					var gr = new h2d.Graphics();
-					gr.beginFill(0x222222);
+					gr.beginFill(0x515151);
 					gr.drawRect(0, 0, Const.GRID, Const.GRID);
 					gr.setPos(x * Const.GRID, y * Const.GRID);
 					this.add(gr, DP_COLL);
@@ -74,11 +75,7 @@ class Level extends h2d.Layers {
         hero = new en.Hero(this, mHero.cx, mHero.cy);
 
 		var mExit = ld.getMarker(Exit);
-		var sprExit = new ASprite(Const.ALIB, "exit");
-		sprExit.setCenterRatio(0.5, 0.5);
-		sprExit.setPos((mExit.cx + 0.5) * Const.GRID, (mExit.cy + 0.5) * Const.GRID);
-		this.add(sprExit, DP_EXIT);
-		exit = {cx:mExit.cx, cy:mExit.cy, spr:sprExit};
+		exit = new en.Exit(this, mExit.cx, mExit.cy);
 
         arrow = new h2d.Graphics();
 		arrow.beginFill(0x00ff00);
@@ -91,6 +88,7 @@ class Level extends h2d.Layers {
 		fInc = true;
 
 		isCaught = false;
+		endReached = false;
 
 		tweener = new Tweener();
 		cd = new Cooldown(Const.FPS);
@@ -168,8 +166,19 @@ class Level extends h2d.Layers {
 		tweener.create(Const.FPS * 0.5, caughtText.y, Const.STG_HEIGHT >> 1);
 
 		delayer.setS("tCaught", 1.5, function() {
-			game.tCaught.init();
+			game.transition.init(game.resetLevel);
 			caughtText.remove();
+		});
+	}
+
+	public function onEndReached() {
+		endReached = true;
+
+		hero.stopMove();
+		hero.disappear();
+
+		delayer.setS("tEnd", 0.5, function() {
+			game.transition.init(game.goToNextLevel);
 		});
 	}
 
@@ -178,6 +187,11 @@ class Level extends h2d.Layers {
 
 	public function destroy() {
 		removeChildren();
+
+		exit.destroy();
+		hero.destroy();
+		for (e in enemies)
+			e.destroy();
 	}
 
     public function update(dt:Float) {
@@ -187,12 +201,15 @@ class Level extends h2d.Layers {
 		updateArrow(dt);
 
         // Entity
+        exit.update(dt);
         hero.update(dt);
 		for (e in enemies)
 			e.update(dt);
 
-		if (hero.cx == exit.cx && hero.cy == exit.cy)
-			game.goToNextLevel();
+		if (!isCaught && !endReached
+		&&	Helper.distBetweenEnt(hero, exit) < 5
+		&&	!hero.isTooFast())
+			onEndReached();
 
 		tweener.update();
 
