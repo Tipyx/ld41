@@ -1,6 +1,3 @@
-import h2d.Console;
-
-
 @:allow(DebugInfo)
 class Main extends hxd.App {
 
